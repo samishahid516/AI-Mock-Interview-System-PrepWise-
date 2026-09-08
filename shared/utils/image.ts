@@ -5,8 +5,13 @@
  */
 export function resizeImageToDataUrl(
   file: File,
-  maxDimension = 256,
-  quality = 0.8
+  // The largest avatar shown in the app is 120px (the interview call
+  // screen). On a high-DPI/Retina display that needs up to ~360px of real
+  // pixel data to render crisp, so 256px was too small and looked blurry.
+  // 512px covers up to 3x DPI at that size with headroom to spare, while
+  // still producing a small JPEG (well under the backend's upload cap).
+  maxDimension = 512,
+  quality = 0.85
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
