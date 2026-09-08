@@ -14,11 +14,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// Allowed frontend origins: local dev defaults + any extra origins from config/env
+// (set ALLOWED_ORIGINS as a comma-separated list, e.g. your Vercel URL, in production)
+var defaultOrigins = new[] { "http://localhost:3001", "http://localhost:3000" };
+var configuredOrigins = builder.Configuration["AllowedOrigins"]
+    ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    ?? Array.Empty<string>();
+var allowedOrigins = defaultOrigins.Concat(configuredOrigins).Distinct().ToArray();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3001", "http://localhost:3000")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -66,11 +74,10 @@ if (useSqlite)
 }
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger stays available in production too (demo project) so the deployed
+// API can be exercised directly at /swagger.
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("AllowFrontend");
 // app.UseHttpsRedirection(); // Commented out to avoid HTTPS redirect warning

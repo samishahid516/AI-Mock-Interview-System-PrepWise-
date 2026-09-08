@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: prepwise-backend
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /swagger/index.html
+    envVars:
+      - key: DatabaseProvider
+        value: Sqlite
+      # Comma-separated list of extra allowed CORS origins (your Vercel URL),
+      # in addition to the localhost defaults baked into Program.cs.
+      - key: AllowedOrigins
+        value: "" # e.g. https://your-app.vercel.app
