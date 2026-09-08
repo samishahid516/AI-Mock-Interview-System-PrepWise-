@@ -211,6 +211,17 @@ const DashboardPage = () => {
     // Save to localStorage
     localStorage.setItem("deletedInterviewIds", JSON.stringify(Array.from(updatedDeletedIds)));
 
+    // If it was completed, also remove it from completedInterviews so its
+    // saved transcript/feedback don't linger in storage indefinitely -
+    // deletedInterviewIds alone only hides it from this list.
+    if (completedInterviews.some((ci) => ci.id === interviewId)) {
+      const updatedCompleted = completedInterviews.filter(
+        (ci) => ci.id !== interviewId
+      );
+      localStorage.setItem("completedInterviews", JSON.stringify(updatedCompleted));
+      setCompletedInterviews(updatedCompleted);
+    }
+
     // If it's a custom interview, also remove from customInterviews and related data
     if (interviewId.startsWith("custom-")) {
       const savedCustom = localStorage.getItem("customInterviews");
@@ -358,8 +369,19 @@ const DashboardPage = () => {
               .map((interview) => (
                 <div
                   key={interview.id}
-                  className="bg-dark-300 border border-dark-200 rounded-xl p-6 hover:border-primary-200 transition flex flex-col justify-between h-full"
+                  className="group relative bg-dark-300 border border-dark-200 rounded-xl p-6 hover:border-primary-200 transition flex flex-col justify-between h-full"
                 >
+                  {/* Delete Button - only visible on hover. Sits just outside
+                      the card corner so it doesn't overlap the score badge,
+                      which already occupies this card's top-right area. */}
+                  <button
+                    onClick={() => handleDeleteClick(interview.id, interview.role)}
+                    className="absolute -top-2 -right-2 p-2 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border border-dark-200 transition-colors z-10 opacity-0 group-hover:opacity-100"
+                    title="Delete interview"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+
                   <div>
                     {/* Type Badge */}
                     <div className="flex items-center justify-between mb-4">
