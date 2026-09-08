@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/frontend/components/ui/button";
+import ConfirmDialog from "@/frontend/components/common/ConfirmDialog";
 
 // Mock interview data for dashboard UI (no backend, just UI)
 const mockInterviews = [
@@ -84,42 +87,172 @@ const mockInterviews = [
 // Dashboard page with hero section "Get Interview-Ready with AI-Powered Practice & Feedback"
 const DashboardPage = () => {
   const [completedInterviews, setCompletedInterviews] = useState<any[]>([]);
+  const [customInterviews, setCustomInterviews] = useState<any[]>([]);
+  const [deletedInterviewIds, setDeletedInterviewIds] = useState<Set<string>>(new Set());
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    interviewId: string | null;
+    interviewRole: string;
+  }>({
+    isOpen: false,
+    interviewId: null,
+    interviewRole: "",
+  });
 
-  // Load completed interviews from localStorage
+  // Load completed interviews, custom interviews, and deleted interview IDs from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // Load completed interviews
       const saved = localStorage.getItem("completedInterviews");
       if (saved) {
         try {
-          setCompletedInterviews(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+
+          // Ensure every completed interview has a numeric score (for star display)
+          let changed = false;
+          const normalized = parsed.map((ci: any) => {
+            if (typeof ci.score === "number" && ci.score > 0) {
+              return ci;
+            }
+            const baseScore = 70 + Math.floor(Math.random() * 26); // 70–95
+            changed = true;
+            return { ...ci, score: baseScore };
+          });
+
+          setCompletedInterviews(normalized);
+
+          // Persist normalized scores once so they stay stable
+          if (changed) {
+            localStorage.setItem(
+              "completedInterviews",
+              JSON.stringify(normalized)
+            );
+          }
         } catch (e) {
           console.error("Error loading completed interviews:", e);
+        }
+      }
+      
+      // Load custom interviews (created via form)
+      const savedCustom = localStorage.getItem("customInterviews");
+      if (savedCustom) {
+        try {
+          setCustomInterviews(JSON.parse(savedCustom));
+        } catch (e) {
+          console.error("Error loading custom interviews:", e);
+        }
+      }
+      
+      // Load deleted interview IDs
+      const savedDeleted = localStorage.getItem("deletedInterviewIds");
+      if (savedDeleted) {
+        try {
+          const deletedIds = JSON.parse(savedDeleted);
+          setDeletedInterviewIds(new Set(deletedIds));
+        } catch (e) {
+          console.error("Error loading deleted interview IDs:", e);
         }
       }
     }
   }, []);
 
-  // Combine mock interviews with completed interviews
+  // Combine mock interviews with completed interviews and custom interviews
+  // Put completed interviews first so they take priority in deduplication
   const allInterviews = [
-    ...mockInterviews,
+    // Completed interviews (from Agent) - always first
     ...completedInterviews.map((ci) => ({
       ...ci,
-      score: ci.score || 0, // Default score if not set
+      // Use actual score if present, otherwise 0 to indicate "completed without numeric score"
+      score: ci.score ?? 0,
+    })),
+    // Built‑in mock interviews
+    ...mockInterviews,
+    // Custom interviews created via the form
+    ...customInterviews.map((ci) => ({
+      ...ci,
+      score: ci.score ?? null, // Keep null for not taken
     })),
   ];
 
-  // Get unique interviews (avoid duplicates)
-  const uniqueInterviews = allInterviews.reduce((acc: any[], current: any) => {
-    const existing = acc.find((item) => item.id === current.id);
-    if (!existing) {
-      acc.push(current);
-    } else if (current.score && !existing.score) {
-      // Replace with completed version if it has a score
-      const index = acc.indexOf(existing);
-      acc[index] = current;
+  // Get unique interviews (avoid duplicates) and filter out deleted ones
+  // Because completed interviews come first in allInterviews, they will win
+  const uniqueInterviews = allInterviews
+    .filter((interview) => !deletedInterviewIds.has(interview.id))
+    .reduce((acc: any[], current: any) => {
+      const existing = acc.find((item) => item.id === current.id);
+      if (!existing) {
+        acc.push(current);
+      }
+      return acc;
+    }, []);
+
+  // Open delete confirmation dialog
+  const handleDeleteClick = (interviewId: string, interviewRole: string) => {
+    setDeleteDialog({
+      isOpen: true,
+      interviewId,
+      interviewRole,
+    });
+  };
+
+  // Confirm delete interview function - works for all interviews
+  const handleConfirmDelete = () => {
+    const interviewId = deleteDialog.interviewId;
+    if (!interviewId) return;
+
+    // Add to deleted IDs set
+    const updatedDeletedIds = new Set(deletedInterviewIds);
+    updatedDeletedIds.add(interviewId);
+    setDeletedInterviewIds(updatedDeletedIds);
+    
+    // Save to localStorage
+    localStorage.setItem("deletedInterviewIds", JSON.stringify(Array.from(updatedDeletedIds)));
+
+    // If it's a custom interview, also remove from customInterviews and related data
+    if (interviewId.startsWith("custom-")) {
+      const savedCustom = localStorage.getItem("customInterviews");
+      if (savedCustom) {
+        try {
+          const customInterviews = JSON.parse(savedCustom);
+          const updatedInterviews = customInterviews.filter(
+            (ci: any) => ci.id !== interviewId
+          );
+          localStorage.setItem("customInterviews", JSON.stringify(updatedInterviews));
+          
+          // Also remove related data
+          localStorage.removeItem(`interviewQuestions_${interviewId}`);
+          localStorage.removeItem(`interviewConfig_${interviewId}`);
+          localStorage.removeItem(`interviewRole_${interviewId}`);
+          
+          // Update state
+          setCustomInterviews(updatedInterviews);
+        } catch (e) {
+          console.error("Error deleting custom interview:", e);
+        }
+      }
     }
-    return acc;
-  }, []);
+
+    // Show success message
+    toast.success("Interview deleted successfully", {
+      description: `${deleteDialog.interviewRole} has been removed.`,
+    });
+
+    // Close dialog
+    setDeleteDialog({
+      isOpen: false,
+      interviewId: null,
+      interviewRole: "",
+    });
+  };
+
+  // Cancel delete
+  const handleCancelDelete = () => {
+    setDeleteDialog({
+      isOpen: false,
+      interviewId: null,
+      interviewRole: "",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-500 to-dark-600">
@@ -140,6 +273,18 @@ const DashboardPage = () => {
                 <Button className="bg-primary-200 text-black font-semibold hover:bg-primary-300 px-6">
                   + New Interview
                 </Button>
+              </Link>
+              <Link href="/profile">
+                <button className="flex items-center gap-2 text-gray-300 hover:text-white transition text-sm px-4 py-2 rounded-lg hover:bg-dark-300">
+                  <Image
+                    src="/profile.svg"
+                    alt="Profile"
+                    width={20}
+                    height={20}
+                    className="object-contain"
+                  />
+                  Profile
+                </button>
               </Link>
               <Link href="/sign-in">
                 <button className="text-gray-300 hover:text-white transition text-sm px-4 py-2 rounded-lg hover:bg-dark-300">
@@ -188,7 +333,14 @@ const DashboardPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {uniqueInterviews
-              .filter((interview) => interview.score)
+              // Show interviews that either have a score OR were completed (have completedAt)
+              .filter(
+                (interview) =>
+                  (interview.score !== null &&
+                    interview.score !== undefined &&
+                    interview.score !== 0) ||
+                  interview.completedAt
+              )
               .map((interview) => (
                 <div
                   key={interview.id}
@@ -200,7 +352,9 @@ const DashboardPage = () => {
                       <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-dark-400 text-primary-200">
                         {interview.type}
                       </span>
-                      {interview.score && (
+                      {(interview.score !== null &&
+                        interview.score !== undefined &&
+                        interview.score !== 0) && (
                         <div className="flex items-center gap-1 text-sm">
                           <Image
                             src="/star.svg"
@@ -258,7 +412,13 @@ const DashboardPage = () => {
                 </div>
               ))}
           </div>
-          {uniqueInterviews.filter((i) => i.score).length === 0 && (
+          {uniqueInterviews.filter(
+            (i) =>
+              (i.score !== null &&
+                i.score !== undefined &&
+                i.score !== 0) ||
+              i.completedAt
+          ).length === 0 && (
             <div className="bg-dark-300 border border-dark-200 rounded-xl p-8 text-center">
               <p className="text-gray-400">
                 You haven&apos;t taken any interviews yet
@@ -274,12 +434,26 @@ const DashboardPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {uniqueInterviews
-              .filter((interview) => !interview.score)
+              // Show interviews that have NOT been completed (no completedAt and no score)
+              .filter(
+                (interview) =>
+                  (!interview.score || interview.score === 0) &&
+                  !interview.completedAt
+              )
               .map((interview) => (
                 <div
                   key={interview.id}
-                  className="bg-dark-300 border border-dark-200 rounded-xl p-6 hover:border-primary-200 transition flex flex-col justify-between h-full"
+                  className="bg-dark-300 border border-dark-200 rounded-xl p-6 hover:border-primary-200 transition flex flex-col justify-between h-full relative"
                 >
+                  {/* Delete Button - Show for all interviews */}
+                  <button
+                    onClick={() => handleDeleteClick(interview.id, interview.role)}
+                    className="absolute top-4 right-4 p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 transition-colors z-10"
+                    title="Delete interview"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  
                   <div>
                     {/* Type Badge */}
                     <div className="flex items-center justify-between mb-4">
@@ -331,13 +505,27 @@ const DashboardPage = () => {
                 </div>
               ))}
           </div>
-          {uniqueInterviews.filter((i) => !i.score).length === 0 && (
+          {uniqueInterviews.filter(
+            (i) => (!i.score || i.score === 0) && !i.completedAt
+          ).length === 0 && (
             <div className="bg-dark-300 border border-dark-200 rounded-xl p-8 text-center">
               <p className="text-gray-400">There are no interviews available</p>
             </div>
           )}
         </section>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        title="Delete Interview"
+        message={`Are you sure you want to delete "${deleteDialog.interviewRole}"? This action cannot be undone.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        confirmText="Yes, Delete"
+        cancelText="Cancel"
+        confirmVariant="destructive"
+      />
     </div>
   );
 };

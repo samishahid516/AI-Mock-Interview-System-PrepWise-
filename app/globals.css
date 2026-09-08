@@ -21,6 +21,9 @@
   --color-dark-100: #020408;
   --color-dark-200: #27282f;
   --color-dark-300: #242633;
+  --color-dark-400: #1e202b;
+  --color-dark-500: #16171f;
+  --color-dark-600: #0d0e13;
 
   --font-mona-sans: "Mona Sans", sans-serif;
 
@@ -155,6 +158,13 @@
   }
   li {
     @apply text-light-100;
+  }
+  select {
+    color-scheme: dark;
+  }
+  select option {
+    background-color: var(--color-dark-400);
+    color: white;
   }
 }
 

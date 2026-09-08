@@ -1,0 +1,431 @@
+
+> prepwise@0.1.0 dev
+> next dev --port 3001
+
+   ▲ Next.js 15.2.2
+   - Local:        http://localhost:3001
+   - Network:      http://10.255.255.254:3001
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 40.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 30.8s (881 modules)
+ ✓ Compiled in 7.4s (360 modules)
+ GET / 200 in 38817ms
+ ✓ Compiled in 873ms (346 modules)
+ ✓ Compiled in 2.7s (360 modules)
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/layout-router.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3650793867'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/render-from-template-context.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3126642347'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/layout-router.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3708461061'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/render-from-template-context.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2466144549'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/sonner/dist/index.mjs#Toaster" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3047695557'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/layout-router.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3650793867'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/render-from-template-context.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3126642347'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/layout-router.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3708461061'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/render-from-template-context.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2466144549'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/frontend/components/auth/AuthForm.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1422150917'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/metadata/metadata-boundary.js#OutletBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1700291937'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/metadata/async-metadata.js#AsyncMetadataOutlet" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '598725413'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/error-boundary.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3980875720'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/client-page.js#ClientPageRoot" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2697416904'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/client-segment.js#ClientSegmentRoot" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1259577672'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/http-access-fallback/error-boundary.js#HTTPAccessFallbackBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '731571272'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/layout-router.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '439622472'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/metadata/metadata-boundary.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2856952136'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/metadata/metadata-boundary.js#OutletBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3940365384'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/render-from-template-context.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1655397352'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/metadata/metadata-boundary.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2687687912'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/metadata/metadata-boundary.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3402553765'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/metadata/metadata-boundary.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '884392645'
+}
+ ⨯ Error: Could not find the module "/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/next/dist/client/components/metadata/async-metadata.js#AsyncMetadata" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2297656911'
+}
+ GET / 200 in 23717ms
+ ✓ Compiled in 972ms (360 modules)
+ GET / 200 in 1793ms
+ ✓ Compiled in 1213ms (360 modules)
+ ✓ Compiled in 1329ms (360 modules)
+ GET / 200 in 1734ms
+ ✓ Compiled in 1066ms (360 modules)
+ ✓ Compiled in 1556ms (360 modules)
+ GET / 200 in 1959ms
+ ✓ Compiled in 962ms (360 modules)
+ GET / 200 in 1859ms
+ ✓ Compiled in 1266ms (360 modules)
+ ✓ Compiled in 959ms (360 modules)
+ GET / 200 in 1243ms
+ ✓ Compiled in 7.1s (360 modules)
+ ✓ Compiled in 4.1s (360 modules)
+ GET / 200 in 11116ms
+ ✓ Compiled in 2.1s (360 modules)
+ ✓ Compiled in 1787ms (360 modules)
+ GET / 200 in 3777ms
+ ✓ Compiled in 1977ms (360 modules)
+ ✓ Compiled in 2.8s (360 modules)
+ GET / 200 in 5237ms
+ ✓ Compiled in 2.7s (360 modules)
+ ✓ Compiled in 3.1s (360 modules)
+ ✓ Compiled in 1912ms (360 modules)
+ ✓ Compiled in 1636ms (360 modules)
+ ✓ Compiled in 1470ms (360 modules)
+ ⨯ ./node_modules/@radix-ui/react-compose-refs/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-compose-refs/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-compose-refs/dist/index.mjs
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+ ⨯ ./node_modules/@radix-ui/react-slot/dist/index.mjs
+Error: ENOENT: no such file or directory, open '/mnt/c/Users/Sami/Desktop/sami.AI/node_modules/@radix-ui/react-slot/dist/index.mjs'
+
+Import trace for requested module:
+./node_modules/@radix-ui/react-slot/dist/index.mjs
+./frontend/components/ui/button.tsx
+./frontend/components/auth/AuthForm.tsx
+[?25h

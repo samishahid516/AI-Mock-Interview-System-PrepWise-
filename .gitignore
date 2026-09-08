@@ -39,3 +39,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+.vs/
+*.csproj.user
+*.csproj.bak
+*.sln.bak
+
+# SQLite
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal

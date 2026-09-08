@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
@@ -108,17 +109,159 @@ const mockFeedback: Record<string, any> = {
 const Feedback = () => {
   const params = useParams();
   const id = params.id as string;
+  const [feedback, setFeedback] = useState<any>(null);
 
-  const feedback = mockFeedback[id];
+  useEffect(() => {
+    // First check mock feedback
+    let foundFeedback = mockFeedback[id];
+
+    // If not found, check completed interviews from localStorage
+    if (!foundFeedback && typeof window !== "undefined") {
+      const completedInterviews = JSON.parse(
+        localStorage.getItem("completedInterviews") || "[]"
+      );
+      const completedInterview = completedInterviews.find(
+        (ci: any) => ci.id === id
+      );
+
+      if (completedInterview) {
+        // Base total score: use saved score if present, otherwise random 70–95
+        const baseScore =
+          typeof completedInterview.score === "number" &&
+          completedInterview.score > 0
+            ? completedInterview.score
+            : 70 + Math.floor(Math.random() * 26);
+
+        // Generate role-specific category breakdown with random-ish scores near baseScore
+        const role: string = (completedInterview.role || "").toLowerCase();
+        let categories: { name: string; score: number; comment: string }[] = [];
+
+        const makeScore = (delta: number) =>
+          Math.max(60, Math.min(100, baseScore + delta));
+
+        if (role.includes("frontend")) {
+          categories = [
+            {
+              name: "React & UI Skills",
+              score: makeScore(+2),
+              comment: "Strong understanding of component design and state.",
+            },
+            {
+              name: "JavaScript Fundamentals",
+              score: makeScore(0),
+              comment: "Good grasp of core language features.",
+            },
+            {
+              name: "Communication",
+              score: makeScore(-3),
+              comment: "Explains solutions clearly and concisely.",
+            },
+          ];
+        } else if (role.includes("backend")) {
+          categories = [
+            {
+              name: "API & Architecture",
+              score: makeScore(+1),
+              comment: "Solid approach to designing and structuring services.",
+            },
+            {
+              name: "Database & SQL",
+              score: makeScore(-2),
+              comment: "Understands schema design and querying.",
+            },
+            {
+              name: "Problem Solving",
+              score: makeScore(+3),
+              comment: "Handles scenarios methodically under constraints.",
+            },
+          ];
+        } else if (role.includes("product")) {
+          categories = [
+            {
+              name: "Product Strategy",
+              score: makeScore(+3),
+              comment: "Strong sense of vision and prioritization.",
+            },
+            {
+              name: "Communication",
+              score: makeScore(0),
+              comment: "Clearly articulates trade-offs and decisions.",
+            },
+            {
+              name: "Leadership",
+              score: makeScore(-2),
+              comment: "Collaborates effectively with cross‑functional teams.",
+            },
+          ];
+        } else {
+          // Generic fallback
+          categories = [
+            {
+              name: "Technical Knowledge",
+              score: makeScore(+1),
+              comment: "Good understanding of core concepts.",
+            },
+            {
+              name: "Communication",
+              score: makeScore(0),
+              comment: "Explains ideas in a clear way.",
+            },
+            {
+              name: "Problem Solving",
+              score: makeScore(-2),
+              comment: "Approaches challenges logically and systematically.",
+            },
+          ];
+        }
+
+        // Generate strengths / improvements if not already provided
+        const defaultStrengths: string[] =
+          completedInterview.strengths && completedInterview.strengths.length
+            ? completedInterview.strengths
+            : [
+                "Structured answers with clear reasoning.",
+                "Stays calm and thoughtful under pressure.",
+                "Shows good understanding of real‑world scenarios.",
+              ];
+
+        const defaultImprovements: string[] =
+          completedInterview.areasForImprovement &&
+          completedInterview.areasForImprovement.length
+            ? completedInterview.areasForImprovement
+            : [
+                "Add a bit more depth when explaining trade‑offs.",
+                "Practice giving more concrete, real project examples.",
+                "Slow down slightly to make complex points easier to follow.",
+              ];
+
+        // Convert completed interview to rich feedback format
+        foundFeedback = {
+          id: `feedback-${id}`,
+          interviewId: id,
+          role: completedInterview.role,
+          totalScore: baseScore,
+          finalAssessment: completedInterview.finalAssessment || completedInterview.feedback || "Interview completed successfully.",
+          categoryScores: categories,
+          strengths: defaultStrengths,
+          areasForImprovement: defaultImprovements,
+          feedback: completedInterview.feedback,
+          transcript: completedInterview.transcript,
+          createdAt: completedInterview.completedAt || new Date().toISOString(),
+        };
+      }
+    }
+
+    setFeedback(foundFeedback);
+  }, [id]);
 
   if (!feedback) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-dark-500 to-dark-600 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-4">
-            Feedback not found
+            {feedback === null ? "Loading feedback..." : "Feedback not found"}
           </h1>
-          <Link href="/">
+          <Link href="/dashboard">
             <Button className="bg-primary-200 text-black font-semibold hover:bg-primary-300 px-8 py-3">
               Back to Dashboard
             </Button>
@@ -145,7 +288,7 @@ const Feedback = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              <Link href="/">
+              <Link href="/dashboard">
                 <Button className="bg-dark-400 border border-dark-200 text-gray-300 hover:border-primary-200 hover:text-primary-200 px-6">
                   ← Back to Dashboard
                 </Button>
@@ -198,73 +341,91 @@ const Feedback = () => {
         </div>
 
         {/* Category Breakdown */}
-        <div className="bg-dark-300 border border-dark-200 rounded-xl p-6 mb-8">
-          <h3 className="text-xl font-bold text-white mb-6">
-            Category Breakdown
-          </h3>
-          <div className="space-y-4">
-            {feedback.categoryScores.map((category: any, index: number) => (
-              <div key={index} className="bg-dark-400 rounded-lg p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-semibold text-white">{category.name}</h4>
-                  <span className="text-primary-200 font-bold text-lg">
-                    {category.score}/100
-                  </span>
+        {feedback.categoryScores && feedback.categoryScores.length > 0 && (
+          <div className="bg-dark-300 border border-dark-200 rounded-xl p-6 mb-8">
+            <h3 className="text-xl font-bold text-white mb-6">
+              Category Breakdown
+            </h3>
+            <div className="space-y-4">
+              {feedback.categoryScores.map((category: any, index: number) => (
+                <div key={index} className="bg-dark-400 rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-semibold text-white">{category.name}</h4>
+                    <span className="text-primary-200 font-bold text-lg">
+                      {category.score}/100
+                    </span>
+                  </div>
+                  <div className="w-full bg-dark-500 rounded-full h-2 mb-2">
+                    <div
+                      className="bg-gradient-to-r from-primary-200 to-primary-300 h-2 rounded-full"
+                      style={{ width: `${category.score}%` }}
+                    />
+                  </div>
+                  <p className="text-sm text-gray-400">{category.comment}</p>
                 </div>
-                <div className="w-full bg-dark-500 rounded-full h-2 mb-2">
-                  <div
-                    className="bg-gradient-to-r from-primary-200 to-primary-300 h-2 rounded-full"
-                    style={{ width: `${category.score}%` }}
-                  />
-                </div>
-                <p className="text-sm text-gray-400">{category.comment}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Detailed Feedback Text (for completed interviews) */}
+        {feedback.feedback && (
+          <div className="bg-dark-300 border border-dark-200 rounded-xl p-6 mb-8">
+            <h3 className="text-xl font-bold text-white mb-4">Detailed Feedback</h3>
+            <div className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+              {feedback.feedback}
+            </div>
+          </div>
+        )}
 
         {/* Strengths & Areas for Improvement */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-dark-300 border border-dark-200 rounded-xl p-6">
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <span className="text-green-400">✓</span> Strengths
-            </h3>
-            <ul className="space-y-2">
-              {feedback.strengths.map((strength: string, index: number) => (
-                <li
-                  key={index}
-                  className="flex items-start gap-2 text-gray-300"
-                >
-                  <span className="text-primary-200 mt-1">•</span>
-                  {strength}
-                </li>
-              ))}
-            </ul>
-          </div>
+        {(feedback.strengths?.length > 0 || feedback.areasForImprovement?.length > 0) && (
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {feedback.strengths && feedback.strengths.length > 0 && (
+              <div className="bg-dark-300 border border-dark-200 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-green-400">✓</span> Strengths
+                </h3>
+                <ul className="space-y-2">
+                  {feedback.strengths.map((strength: string, index: number) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-2 text-gray-300"
+                    >
+                      <span className="text-primary-200 mt-1">•</span>
+                      {strength}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-          <div className="bg-dark-300 border border-dark-200 rounded-xl p-6">
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <span className="text-yellow-400">⚡</span> Areas for Improvement
-            </h3>
-            <ul className="space-y-2">
-              {feedback.areasForImprovement.map(
-                (area: string, index: number) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-2 text-gray-300"
-                  >
-                    <span className="text-primary-200 mt-1">•</span>
-                    {area}
-                  </li>
-                )
-              )}
-            </ul>
+            {feedback.areasForImprovement && feedback.areasForImprovement.length > 0 && (
+              <div className="bg-dark-300 border border-dark-200 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-yellow-400">⚡</span> Areas for Improvement
+                </h3>
+                <ul className="space-y-2">
+                  {feedback.areasForImprovement.map(
+                    (area: string, index: number) => (
+                      <li
+                        key={index}
+                        className="flex items-start gap-2 text-gray-300"
+                      >
+                        <span className="text-primary-200 mt-1">•</span>
+                        {area}
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         {/* Action Buttons */}
         <div className="flex gap-4 justify-between">
-          <Link href="/" className="flex-1">
+          <Link href="/dashboard" className="flex-1">
             <Button className="w-full bg-dark-400 border border-dark-200 text-gray-300 hover:border-primary-200 hover:text-primary-200 py-3 font-semibold">
               Back to Dashboard
             </Button>

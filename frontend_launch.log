@@ -1,0 +1,71 @@
+
+> prepwise@0.1.0 dev
+> next dev --port 3001 --turbopack
+
+   ▲ Next.js 15.2.2 (Turbopack)
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.0.177:3001
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 6.6s
+ ○ Compiling /interview ...
+ ✓ Compiled /interview in 12.5s
+ GET /interview 200 in 14493ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1802ms
+ GET / 200 in 2175ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 2.2s
+ GET /favicon.ico?favicon.eb09710d.ico 200 in 2633ms
+ ○ Compiling /sign-in ...
+ ✓ Compiled /sign-in in 2.1s
+ GET /sign-in 200 in 2321ms
+ GET /sign-in 200 in 322ms
+ GET /sign-in 200 in 329ms
+ GET /sign-in 200 in 297ms
+ ○ Compiling /sign-up ...
+ ✓ Compiled /sign-up in 2.2s
+ GET /sign-up 200 in 2410ms
+ GET /sign-in 200 in 233ms
+ GET / 200 in 422ms
+ GET /favicon.ico?favicon.eb09710d.ico 200 in 247ms
+ GET / 200 in 682ms
+ GET /sign-in 200 in 400ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 2.7s
+ GET /dashboard 200 in 3014ms
+ ○ Compiling /interview/[id]/feedback ...
+ ✓ Compiled /interview/[id]/feedback in 2.6s
+ GET /interview/6/feedback 200 in 4953ms
+ ○ Compiling /interview/[id] ...
+ ✓ Compiled /interview/[id] in 2.8s
+ GET /interview/6 200 in 5137ms
+ GET /dashboard 200 in 444ms
+ ○ Compiling /profile ...
+ ✓ Compiled /profile in 2.9s
+ GET /profile 200 in 3119ms
+ GET /interview 200 in 444ms
+ ○ Compiling /api/generate-questions ...
+ ✓ Compiled /api/generate-questions in 2.4s
+ POST /api/generate-questions 500 in 2906ms
+ GET /dashboard 200 in 394ms
+ GET /profile 200 in 471ms
+ GET /dashboard 200 in 396ms
+ GET / 200 in 683ms
+ GET /sign-in 200 in 356ms
+ GET /dashboard 200 in 351ms
+ GET /interview/custom-1787744153895 200 in 338ms
+ GET / 200 in 398ms
+ GET / 200 in 858ms
+ GET / 200 in 588ms
+ GET /sign-in 200 in 1774ms
+ GET /sign-up 200 in 2628ms
+ GET /sign-in 200 in 611ms
+ GET /sign-in 200 in 311ms
+ GET / 200 in 759ms
+ GET /dashboard 200 in 672ms
+ GET /interview/custom-1787744153895 200 in 511ms
+ GET /dashboard 200 in 516ms
+ GET /interview/custom-1765940222475/feedback 200 in 608ms
+ GET /dashboard 200 in 506ms

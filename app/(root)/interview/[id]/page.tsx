@@ -117,37 +117,75 @@ const InterviewDetails = () => {
   const id = params.id as string;
   const [userName, setUserName] = useState("User");
   const [userId, setUserId] = useState("mock-user-id");
+  const [interview, setInterview] = useState<any>(null);
 
-  // Get interview data first
-  const interview = mockInterviews[id];
-
-  // Get user name from localStorage and save interview role
+  // Get interview data - check both mock interviews and custom interviews
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedName = localStorage.getItem("userName");
-      const storedId = localStorage.getItem("userId");
-      if (storedName) setUserName(storedName);
-      if (storedId) setUserId(storedId);
+    if (typeof window === "undefined") return;
+
+    const storedName = localStorage.getItem("userName");
+    const storedId = localStorage.getItem("userId");
+    if (storedName) setUserName(storedName);
+    if (storedId) setUserId(storedId);
+
+    // First check mock interviews
+    let foundInterview = mockInterviews[id];
+    
+    // Save mock interview config to localStorage if it's a mock interview
+    if (foundInterview && !id.startsWith("custom-")) {
+      const config = {
+        type: foundInterview.type || "Technical",
+        techstack: foundInterview.techstack || [],
+        level: "",
+        role: foundInterview.role,
+      };
+      localStorage.setItem(`interviewConfig_${id}`, JSON.stringify(config));
+      localStorage.setItem(`interviewRole_${id}`, foundInterview.role);
+    }
+
+    // If not found, check custom interviews from localStorage
+    if (!foundInterview && id.startsWith("custom-")) {
+      const customInterviews = JSON.parse(
+        localStorage.getItem("customInterviews") || "[]"
+      );
+      foundInterview = customInterviews.find((ci: any) => ci.id === id);
       
-      // Save interview role to localStorage for Agent component
-      if (interview) {
-        localStorage.setItem(`interviewRole_${id}`, interview.role);
+      // If found, load questions from localStorage
+      if (foundInterview) {
+        const savedQuestions = localStorage.getItem(`interviewQuestions_${id}`);
+        if (savedQuestions) {
+          try {
+            foundInterview.questions = JSON.parse(savedQuestions);
+          } catch (e) {
+            console.error("Error parsing saved questions:", e);
+          }
+        }
       }
     }
-  }, [id, interview]);
+
+    if (foundInterview) {
+      setInterview(foundInterview);
+      // Save interview details to localStorage for Agent component
+      localStorage.setItem(`interviewRole_${id}`, foundInterview.role);
+      
+      // Save interview config with all details
+      const config = {
+        type: foundInterview.type || "Technical",
+        techstack: foundInterview.techstack || [],
+        level: foundInterview.level || "",
+        role: foundInterview.role,
+      };
+      localStorage.setItem(`interviewConfig_${id}`, JSON.stringify(config));
+    }
+  }, [id]);
 
   if (!interview) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-dark-500 to-dark-600 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-4">
-            Interview not found
+            Loading interview...
           </h1>
-          <Link href="/">
-            <Button className="bg-primary-200 text-black font-semibold hover:bg-primary-300 px-8 py-3">
-              Back to Dashboard
-            </Button>
-          </Link>
         </div>
       </div>
     );
@@ -206,7 +244,7 @@ const InterviewDetails = () => {
                   </span>
 
                   <div className="flex items-center gap-2">
-                    {interview.techstack.map((tech) => (
+                    {(interview.techstack || []).map((tech: string) => (
                       <span
                         key={tech}
                         className="inline-block px-3 py-1 rounded text-xs bg-dark-400 text-gray-300"
@@ -228,7 +266,7 @@ const InterviewDetails = () => {
             userId={userId}
             interviewId={id}
             type="interview"
-            questions={interview.questions}
+            questions={interview?.questions || []}
             feedbackId={undefined}
           />
         </div>

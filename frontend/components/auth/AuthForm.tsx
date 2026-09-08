@@ -85,6 +85,9 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
           } else if (user.Email || user.email) {
             localStorage.setItem("userName", user.Email || user.email);
           }
+          if (user.Email || user.email) {
+            localStorage.setItem("userEmail", user.Email || user.email);
+          }
           if (user.Id || user.id) {
             localStorage.setItem("userId", String(user.Id || user.id));
           }
@@ -105,7 +108,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-500 to-dark-600 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-dark-300 to-dark-100 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           {/* Left Side - Hero Section (Desktop Only) */}
@@ -122,8 +125,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
               <p className="text-xl text-gray-300 mb-6">
                 Master Your Interview Skills with AI
               </p>
-              <p className="text-lg text-gray-400 mb-8 leading-relaxed">
-                Get personalized feedback on your interview performance.
+              <p className="text-lg text-gray-400 mb-8 leading-relaxed">                Get personalized feedback on your interview performance.
                 Practice with real questions and improve your confidence.
               </p>
 
@@ -182,7 +184,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
             </div>
 
             {/* Form Card */}
-            <div className="bg-dark-300 rounded-2xl p-8 shadow-2xl border border-dark-200">
+            <div className="bg-dark-200 rounded-2xl p-8 shadow-2xl border border-light-600">
               <h2 className="text-2xl font-bold text-white mb-6">
                 {type === "sign-up" ? "Create Account" : "Welcome Back"}
               </h2>
@@ -209,7 +211,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
                       type="text"
                       name="name"
                       placeholder="John Doe"
-                      className="w-full px-4 py-3 rounded-lg bg-dark-400 border border-dark-200 text-white placeholder-gray-500 focus:outline-none focus:border-primary-200 transition"
+                      className="w-full px-4 py-3 rounded-lg bg-dark-300 border border-light-600 text-white placeholder-gray-500 focus:outline-none focus:border-primary-200 transition"
                       value={formData.name}
                       onChange={handleChange}
                       required
@@ -225,7 +227,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
                     type="email"
                     name="email"
                     placeholder="you@example.com"
-                    className="w-full px-4 py-3 rounded-lg bg-dark-400 border border-dark-200 text-white placeholder-gray-500 focus:outline-none focus:border-primary-200 transition"
+                    className="w-full px-4 py-3 rounded-lg bg-dark-300 border border-light-600 text-white placeholder-gray-500 focus:outline-none focus:border-primary-200 transition"
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -240,7 +242,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
                     type="password"
                     name="password"
                     placeholder="••••••••"
-                    className="w-full px-4 py-3 rounded-lg bg-dark-400 border border-dark-200 text-white placeholder-gray-500 focus:outline-none focus:border-primary-200 transition"
+                    className="w-full px-4 py-3 rounded-lg bg-dark-300 border border-light-600 text-white placeholder-gray-500 focus:outline-none focus:border-primary-200 transition"
                     value={formData.password}
                     onChange={handleChange}
                     required
@@ -249,7 +251,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
 
                 <Button
                   type="submit"
-                  className="w-full py-3 bg-gradient-to-r from-primary-200 to-primary-300 text-black font-bold rounded-lg hover:shadow-lg transition mt-6 disabled:opacity-50"
+                  className="w-full py-3 bg-gradient-to-r from-primary-200 to-primary-100 text-dark-100 font-bold rounded-lg hover:shadow-lg transition mt-6 disabled:opacity-50"
                   disabled={loading}
                 >
                   {loading ? (
