@@ -124,8 +124,25 @@ const Feedback = () => {
         (ci: any) => ci.id === id
       );
 
-      if (completedInterview) {
-        // Base total score: use saved score if present, otherwise random 70–95
+      if (completedInterview && completedInterview.categoryScores?.length) {
+        // New format: real, transcript-derived scoring already computed and
+        // stored by Agent.tsx at the end of the call - use it as-is.
+        foundFeedback = {
+          id: `feedback-${id}`,
+          interviewId: id,
+          role: completedInterview.role,
+          totalScore: completedInterview.score,
+          finalAssessment: completedInterview.finalAssessment,
+          categoryScores: completedInterview.categoryScores,
+          strengths: completedInterview.strengths,
+          areasForImprovement: completedInterview.areasForImprovement,
+          transcript: completedInterview.transcript,
+          createdAt: completedInterview.completedAt || new Date().toISOString(),
+        };
+      } else if (completedInterview) {
+        // Legacy format (saved before real transcript-based scoring existed):
+        // fall back to the old best-effort generation so old localStorage
+        // data still renders something reasonable.
         const baseScore =
           typeof completedInterview.score === "number" &&
           completedInterview.score > 0

@@ -208,7 +208,7 @@ const InterviewDetails = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              <Link href="/">
+              <Link href="/dashboard">
                 <Button className="bg-dark-400 border border-dark-200 text-gray-300 hover:border-primary-200 hover:text-primary-200 px-6">
                   ← Back to Dashboard
                 </Button>

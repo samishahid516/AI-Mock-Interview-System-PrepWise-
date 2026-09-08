@@ -9,8 +9,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // Every button in this app is used with a custom className that sets
+        // its own background/text/border, but none of them override the
+        // hover background - so the hardcoded hover:bg-primary/90 below used
+        // to win. With the app forced into dark mode, --primary resolves to
+        // a near-white color, making custom light hover text unreadable
+        // against it. hover:opacity-90 dims whatever background is actually
+        // set instead of replacing it, so it works with every custom style.
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-xs hover:opacity-90",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:

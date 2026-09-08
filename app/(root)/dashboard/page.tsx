@@ -88,6 +88,7 @@ const mockInterviews = [
 const DashboardPage = () => {
   const [completedInterviews, setCompletedInterviews] = useState<any[]>([]);
   const [customInterviews, setCustomInterviews] = useState<any[]>([]);
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [deletedInterviewIds, setDeletedInterviewIds] = useState<Set<string>>(new Set());
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean;
@@ -102,6 +103,8 @@ const DashboardPage = () => {
   // Load completed interviews, custom interviews, and deleted interview IDs from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
+      setUserPhoto(localStorage.getItem("userPhoto"));
+
       // Load completed interviews
       const saved = localStorage.getItem("completedInterviews");
       if (saved) {
@@ -276,13 +279,24 @@ const DashboardPage = () => {
               </Link>
               <Link href="/profile">
                 <button className="flex items-center gap-2 text-gray-300 hover:text-white transition text-sm px-4 py-2 rounded-lg hover:bg-dark-300">
-                  <Image
-                    src="/profile.svg"
-                    alt="Profile"
-                    width={20}
-                    height={20}
-                    className="object-contain"
-                  />
+                  {userPhoto ? (
+                    // Uploaded photos are base64 data URLs, which next/image's
+                    // optimizer doesn't handle - use a plain <img> for those.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={userPhoto}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <Image
+                      src="/profile.svg"
+                      alt="Profile"
+                      width={20}
+                      height={20}
+                      className="object-contain"
+                    />
+                  )}
                   Profile
                 </button>
               </Link>

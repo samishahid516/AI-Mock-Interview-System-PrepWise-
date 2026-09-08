@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { vapi } from "@/api/integrations/vapi";
 import { interviewer } from "@/shared/constants";
 import { cn } from "@/shared/utils/utils";
+import { generateInterviewFeedback } from "@/shared/utils/feedbackAnalysis";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -48,6 +49,13 @@ const Agent = ({
   const [isTyping, setIsTyping] = useState(false);
   const currentMessageRef = useRef<TranscriptEntry | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserPhoto(localStorage.getItem("userPhoto"));
+    }
+  }, []);
 
   // Typing effect function
   const typeText = (text: string) => {
@@ -263,48 +271,6 @@ const Agent = ({
             localStorage.getItem("completedInterviews") || "[]"
           );
           
-          // Extract feedback and score from transcript
-          const fullTranscript = transcript.map(t => t.text).join(" ");
-          
-          // Better feedback extraction - look for feedback section
-          const feedbackKeywords = /feedback|strengths|areas for improvement|what you did well|here's what you can work on|rating|rated|score|overall/i;
-          const feedbackMatch = fullTranscript.match(feedbackKeywords);
-          
-          // Extract score - look for patterns like "7/10", "rating 7", "score 7", etc.
-          const scorePatterns = [
-            /(\d+)\/10/i,
-            /rating.*?(\d+)/i,
-            /score.*?(\d+)/i,
-            /rate.*?(\d+)/i,
-            /(\d+)\s*out\s*of\s*10/i,
-            /(\d+)\/100/i, // Also check for /100 format
-            /score.*?(\d+)\s*out\s*of\s*100/i,
-            /i'?d\s*rate.*?(\d+)/i, // "I'd rate your performance a 7"
-            /overall.*?(\d+)/i, // "Overall, I'd rate you a 7"
-            /(\d+)\s*points?/i, // "7 points"
-          ];
-          
-          let extractedScore: number | null = null;
-          for (const pattern of scorePatterns) {
-            const match = fullTranscript.match(pattern);
-            if (match) {
-              const score = parseInt(match[1] || match[0]);
-              if (score >= 1 && score <= 10) {
-                extractedScore = score * 10; // Convert to 0-100 scale (1–10 → 10–100)
-                break;
-              } else if (score >= 1 && score <= 100 && (pattern.source.includes("100") || score > 10)) {
-                extractedScore = score; // Already on 0-100 scale
-                break;
-              }
-            }
-          }
-          
-          // If no score extracted from transcript, generate a realistic random score (70–95)
-          // so the dashboard and feedback can always show a star + score.
-          if (extractedScore === null) {
-            extractedScore = 70 + Math.floor(Math.random() * 26);
-          }
-
           // Get interview details from localStorage
           const interviewRole = typeof window !== "undefined" 
             ? localStorage.getItem(`interviewRole_${interviewId}`) || "Interview"
@@ -352,93 +318,16 @@ const Agent = ({
             }
           }
 
-          // Extract feedback text - everything after "feedback" keyword
-          let feedbackText = null;
-          if (feedbackMatch) {
-            const feedbackIndex = fullTranscript.toLowerCase().indexOf(feedbackMatch[0].toLowerCase());
-            if (feedbackIndex >= 0) {
-              feedbackText = fullTranscript.substring(feedbackIndex);
-            }
-          }
-
-          // If no feedback found, use last part of transcript as feedback
-          if (!feedbackText && transcript.length > 0) {
-            const lastFewMessages = transcript.slice(-5);
-            feedbackText = lastFewMessages.map(t => t.text).join(" ");
-          }
-
-          // Parse structured feedback from feedback text (role-specific)
-          let strengths: string[] = [];
-          let areasForImprovement: string[] = [];
-          let finalAssessment = feedbackText || `${interviewRole} interview completed successfully.`;
-          
-          if (feedbackText) {
-            // Extract strengths - look for patterns like "strengths:", "what you did well:", etc.
-            const strengthsPatterns = [
-              /strengths?[:\-]?\s*(.+?)(?=areas?\s*for\s*improvement|here'?s\s*what\s*you\s*can|rating|score|overall|$)/is,
-              /what\s*you\s*did\s*well[:\-]?\s*(.+?)(?=here'?s\s*what\s*you\s*can|areas?\s*for\s*improvement|rating|score|overall|$)/is,
-            ];
-            
-            for (const pattern of strengthsPatterns) {
-              const match = feedbackText.match(pattern);
-              if (match && match[1]) {
-                const strengthsText = match[1].trim();
-                // Extract bullet points or list items
-                strengths = strengthsText
-                  .split(/\n|•|[-*]|\d+\./)
-                  .map(s => s.trim())
-                  .filter(s => s.length > 10 && !s.match(/^(strengths?|what\s*you\s*did\s*well)/i))
-                  .slice(0, 5); // Limit to 5 items
-                break;
-              }
-            }
-            
-            // Extract areas for improvement
-            const improvementPatterns = [
-              /areas?\s*for\s*improvement[:\-]?\s*(.+?)(?=rating|score|overall|$)/is,
-              /here'?s\s*what\s*you\s*can\s*work\s*on[:\-]?\s*(.+?)(?=rating|score|overall|$)/is,
-            ];
-            
-            for (const pattern of improvementPatterns) {
-              const match = feedbackText.match(pattern);
-              if (match && match[1]) {
-                const improvementText = match[1].trim();
-                // Extract bullet points or list items
-                areasForImprovement = improvementText
-                  .split(/\n|•|[-*]|\d+\./)
-                  .map(s => s.trim())
-                  .filter(s => s.length > 10 && !s.match(/^(areas?\s*for\s*improvement|here'?s\s*what\s*you\s*can)/i))
-                  .slice(0, 5); // Limit to 5 items
-                break;
-              }
-            }
-            
-            // Extract final assessment - usually the opening or closing statement
-            const assessmentPatterns = [
-              /(?:thank\s*you\s*for\s*your\s*time|overall|in\s*summary|to\s*summarize)[:\-]?\s*(.+?)(?=strengths|what\s*you\s*did\s*well|areas?\s*for|rating|score|$)/is,
-              /^(.+?)(?=strengths|what\s*you\s*did\s*well|areas?\s*for|rating|score)/is,
-            ];
-            
-            for (const pattern of assessmentPatterns) {
-              const match = feedbackText.match(pattern);
-              if (match && match[1]) {
-                finalAssessment = match[1].trim();
-                // Clean up common prefixes
-                finalAssessment = finalAssessment.replace(/^(thank\s*you\s*for\s*your\s*time|overall|in\s*summary|to\s*summarize)[:\-]?\s*/i, '');
-                if (finalAssessment.length > 20) break;
-              }
-            }
-            
-            // If no structured assessment found, use first 2-3 sentences as assessment
-            if (finalAssessment === feedbackText || finalAssessment.length < 20) {
-              const sentences = feedbackText.split(/[.!?]+/).filter(s => s.trim().length > 15);
-              if (sentences.length > 0) {
-                finalAssessment = sentences.slice(0, 2).join('. ').trim() + '.';
-              } else {
-                finalAssessment = `${interviewRole} interview completed. ${feedbackText.substring(0, 200)}...`;
-              }
-            }
-          }
+          // Score the interview from the actual transcript content: how much
+          // the candidate said, how much of the expected tech stack they
+          // mentioned, how many questions they answered, and how many filler
+          // words they used. Deterministic - no random fallback.
+          const generated = generateInterviewFeedback({
+            role: interviewRole,
+            techstack: interviewTechstack,
+            totalQuestions: questions?.length ?? 0,
+            transcript,
+          });
 
           const interviewData = {
             id: interviewId,
@@ -451,15 +340,13 @@ const Agent = ({
               day: "numeric",
               year: "numeric",
             }),
-            score: extractedScore, // Only actual extracted score, no default
-            description: feedbackText 
-              ? `${interviewType} interview for ${interviewLevel} ${interviewRole}` 
-              : `${interviewType} interview completed`,
+            score: generated.totalScore,
+            description: `${interviewType} interview for ${interviewLevel} ${interviewRole}`,
             transcript: transcript,
-            feedback: feedbackText,
-            finalAssessment: finalAssessment,
-            strengths: strengths,
-            areasForImprovement: areasForImprovement,
+            finalAssessment: generated.finalAssessment,
+            categoryScores: generated.categoryScores,
+            strengths: generated.strengths,
+            areasForImprovement: generated.areasForImprovement,
             completedAt: new Date().toISOString(),
           };
 
@@ -547,16 +434,30 @@ const Agent = ({
         <div className="card-border">
           <div className="card-content">
             <div className="relative">
-              <Image
-                src="/user-avatar.png"
-                alt="profile-image"
-                width={539}
-                height={539}
-                className={cn(
-                  "rounded-full object-cover size-[120px] transition-all duration-300",
-                  isListening && "ring-2 ring-primary-300 ring-opacity-50 opacity-70"
-                )}
-              />
+              {userPhoto ? (
+                // Uploaded photos are base64 data URLs, which next/image's
+                // optimizer doesn't handle - use a plain <img> for those.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={userPhoto}
+                  alt="profile-image"
+                  className={cn(
+                    "rounded-full object-cover size-[120px] transition-all duration-300",
+                    isListening && "ring-2 ring-primary-300 ring-opacity-50 opacity-70"
+                  )}
+                />
+              ) : (
+                <Image
+                  src="/user-avatar.png"
+                  alt="profile-image"
+                  width={539}
+                  height={539}
+                  className={cn(
+                    "rounded-full object-cover size-[120px] transition-all duration-300",
+                    isListening && "ring-2 ring-primary-300 ring-opacity-50 opacity-70"
+                  )}
+                />
+              )}
               {isListening && (
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary-300 rounded-full animate-pulse border-2 border-dark-500 opacity-60" />
               )}

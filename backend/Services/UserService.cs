@@ -22,7 +22,7 @@ public class UserService : IUserService
         // ordinal one, depending on config) is case-sensitive, so "User@x.com" typed
         // at sign-up would never match "user@x.com" typed at sign-in otherwise.
         const string sql = @"
-            SELECT Id, FullName, Email, PasswordHash, CreatedAt, UpdatedAt
+            SELECT Id, FullName, Email, PasswordHash, PhotoUrl, CreatedAt, UpdatedAt
             FROM Users
             WHERE LOWER(Email) = LOWER(@Email)";
 
@@ -33,11 +33,19 @@ public class UserService : IUserService
     public async Task<User?> GetUserByIdAsync(Guid userId)
     {
         const string sql = @"
-            SELECT Id, FullName, Email, PasswordHash, CreatedAt, UpdatedAt
+            SELECT Id, FullName, Email, PasswordHash, PhotoUrl, CreatedAt, UpdatedAt
             FROM Users
             WHERE Id = @Id";
 
-        var user = await _connection.QueryFirstOrDefaultAsync<User>(sql, new { Id = userId });
+        // Pass Id as a string, not a raw Guid: the custom SqliteGuidHandler's
+        // SetValue never actually gets invoked for bare Guid-typed Dapper
+        // parameters here, so the parameter was never converted to match the
+        // TEXT format the Id column is stored in - this always returned zero
+        // rows against SQLite. Every other write path in this class already
+        // works around it the same way (CreateUserAsync, UpdateUserProfileAsync,
+        // UpdateUserPhotoAsync). SQL Server's uniqueidentifier column compares
+        // fine against a string parameter too, so this is safe for both.
+        var user = await _connection.QueryFirstOrDefaultAsync<User>(sql, new { Id = userId.ToString() });
         return user;
     }
 
@@ -51,7 +59,7 @@ public class UserService : IUserService
             const string sql = @"
                 INSERT INTO Users (Id, FullName, Email, PasswordHash, CreatedAt, UpdatedAt)
                 VALUES (@Id, @FullName, @Email, @PasswordHash, @CreatedAt, @UpdatedAt)
-                RETURNING Id, FullName, Email, PasswordHash, CreatedAt, UpdatedAt";
+                RETURNING Id, FullName, Email, PasswordHash, PhotoUrl, CreatedAt, UpdatedAt";
 
             try
             {
@@ -75,7 +83,7 @@ public class UserService : IUserService
 
         const string sqlServerSql = @"
             INSERT INTO Users (Id, FullName, Email, PasswordHash, CreatedAt, UpdatedAt)
-            OUTPUT INSERTED.Id, INSERTED.FullName, INSERTED.Email, INSERTED.PasswordHash, INSERTED.CreatedAt, INSERTED.UpdatedAt
+            OUTPUT INSERTED.Id, INSERTED.FullName, INSERTED.Email, INSERTED.PasswordHash, INSERTED.PhotoUrl, INSERTED.CreatedAt, INSERTED.UpdatedAt
             VALUES (NEWID(), @FullName, @Email, @PasswordHash, GETDATE(), GETDATE())";
 
         try
@@ -124,7 +132,7 @@ public class UserService : IUserService
                 UPDATE Users
                 SET FullName = @FullName, Email = @Email, UpdatedAt = @UpdatedAt
                 WHERE Id = @Id
-                RETURNING Id, FullName, Email, PasswordHash, CreatedAt, UpdatedAt";
+                RETURNING Id, FullName, Email, PasswordHash, PhotoUrl, CreatedAt, UpdatedAt";
 
             try
             {
@@ -147,7 +155,7 @@ public class UserService : IUserService
         const string sqlServerSql = @"
             UPDATE Users
             SET FullName = @FullName, Email = @Email, UpdatedAt = GETDATE()
-            OUTPUT INSERTED.Id, INSERTED.FullName, INSERTED.Email, INSERTED.PasswordHash, INSERTED.CreatedAt, INSERTED.UpdatedAt
+            OUTPUT INSERTED.Id, INSERTED.FullName, INSERTED.Email, INSERTED.PasswordHash, INSERTED.PhotoUrl, INSERTED.CreatedAt, INSERTED.UpdatedAt
             WHERE Id = @Id";
 
         try
@@ -157,6 +165,55 @@ public class UserService : IUserService
                 Id = userId,
                 FullName = fullName,
                 Email = email
+            });
+
+            return user;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<User?> UpdateUserPhotoAsync(Guid userId, string photoUrl)
+    {
+        if (_useSqlite)
+        {
+            const string sql = @"
+                UPDATE Users
+                SET PhotoUrl = @PhotoUrl, UpdatedAt = @UpdatedAt
+                WHERE Id = @Id
+                RETURNING Id, FullName, Email, PasswordHash, PhotoUrl, CreatedAt, UpdatedAt";
+
+            try
+            {
+                var user = await _connection.QueryFirstOrDefaultAsync<User>(sql, new
+                {
+                    Id = userId.ToString(),
+                    PhotoUrl = photoUrl,
+                    UpdatedAt = DateTime.UtcNow
+                });
+
+                return user;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        const string sqlServerPhotoSql = @"
+            UPDATE Users
+            SET PhotoUrl = @PhotoUrl, UpdatedAt = GETDATE()
+            OUTPUT INSERTED.Id, INSERTED.FullName, INSERTED.Email, INSERTED.PasswordHash, INSERTED.PhotoUrl, INSERTED.CreatedAt, INSERTED.UpdatedAt
+            WHERE Id = @Id";
+
+        try
+        {
+            var user = await _connection.QueryFirstOrDefaultAsync<User>(sqlServerPhotoSql, new
+            {
+                Id = userId,
+                PhotoUrl = photoUrl
             });
 
             return user;

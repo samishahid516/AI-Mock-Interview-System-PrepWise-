@@ -71,6 +71,18 @@ if (useSqlite)
             CreatedAt TEXT NOT NULL,
             UpdatedAt TEXT NOT NULL
         );");
+
+    // Migration: add PhotoUrl to Users tables created before this column existed.
+    // SQLite has no "ADD COLUMN IF NOT EXISTS", so attempt it and ignore the
+    // "duplicate column" failure on every subsequent startup.
+    try
+    {
+        initConnection.Execute("ALTER TABLE Users ADD COLUMN PhotoUrl TEXT;");
+    }
+    catch (SqliteException)
+    {
+        // Column already exists - nothing to do.
+    }
 }
 
 // Configure the HTTP request pipeline
@@ -115,6 +127,7 @@ app.MapPost("/auth/register", async (RegisterDto dto, IUserService userService) 
             Id = user.Id.ToString(),
             FullName = user.FullName,
             Email = user.Email,
+            PhotoUrl = user.PhotoUrl,
             CreatedAt = user.CreatedAt
         });
     }
@@ -147,6 +160,7 @@ app.MapPost("/auth/login", async (LoginDto dto, IUserService userService) =>
             Id = user.Id.ToString(),
             FullName = user.FullName,
             Email = user.Email,
+            PhotoUrl = user.PhotoUrl,
             CreatedAt = user.CreatedAt
         });
     }
@@ -179,6 +193,7 @@ app.MapGet("/auth/profile/{userId}", async (string userId, IUserService userServ
             Id = user.Id.ToString(),
             FullName = user.FullName,
             Email = user.Email,
+            PhotoUrl = user.PhotoUrl,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt
         });
@@ -224,6 +239,7 @@ app.MapPut("/auth/profile/{userId}", async (string userId, UpdateProfileDto dto,
             Id = user.Id.ToString(),
             FullName = user.FullName,
             Email = user.Email,
+            PhotoUrl = user.PhotoUrl,
             UpdatedAt = user.UpdatedAt
         });
     }
@@ -233,6 +249,50 @@ app.MapPut("/auth/profile/{userId}", async (string userId, UpdateProfileDto dto,
     }
 })
 .WithName("UpdateProfile")
+.WithTags("Auth");
+
+// Max accepted size for a base64-encoded profile photo data URL (~2MB of raw image data).
+const int MaxPhotoDataUrlLength = 2_800_000;
+
+app.MapPut("/auth/profile/{userId}/photo", async (string userId, UpdatePhotoDto dto, IUserService userService) =>
+{
+    try
+    {
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Results.BadRequest("Invalid user ID format.");
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.PhotoUrl) || !dto.PhotoUrl.StartsWith("data:image/"))
+        {
+            return Results.BadRequest("PhotoUrl must be a base64 image data URL.");
+        }
+
+        if (dto.PhotoUrl.Length > MaxPhotoDataUrlLength)
+        {
+            return Results.BadRequest("Photo is too large. Please choose a smaller image.");
+        }
+
+        var user = await userService.UpdateUserPhotoAsync(userGuid, dto.PhotoUrl);
+
+        if (user == null)
+        {
+            return Results.NotFound("User not found.");
+        }
+
+        return Results.Ok(new
+        {
+            Id = user.Id.ToString(),
+            PhotoUrl = user.PhotoUrl,
+            UpdatedAt = user.UpdatedAt
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"An error occurred: {ex.Message}");
+    }
+})
+.WithName("UpdateProfilePhoto")
 .WithTags("Auth");
 
 app.MapPost("/auth/reset-password", async (ResetPasswordDto dto, IUserService userService) =>

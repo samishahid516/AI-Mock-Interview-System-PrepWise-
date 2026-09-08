@@ -91,6 +91,9 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
           if (user.Id || user.id) {
             localStorage.setItem("userId", String(user.Id || user.id));
           }
+          if (user.PhotoUrl || user.photoUrl) {
+            localStorage.setItem("userPhoto", user.PhotoUrl || user.photoUrl);
+          }
           localStorage.setItem("isAuthenticated", "true");
         }
       } catch {

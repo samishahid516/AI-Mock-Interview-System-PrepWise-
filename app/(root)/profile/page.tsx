@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/frontend/components/ui/button";
+import { resizeImageToDataUrl } from "@/shared/utils/image";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -12,7 +13,10 @@ const ProfilePage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [activeTab, setActiveTab] = useState<"profile" | "password">("profile");
-  
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [profileData, setProfileData] = useState({
     fullName: "",
     email: "",
@@ -30,6 +34,7 @@ const ProfilePage = () => {
       const storedName = localStorage.getItem("userName");
       const storedEmail = localStorage.getItem("userEmail");
       const storedId = localStorage.getItem("userId");
+      const storedPhoto = localStorage.getItem("userPhoto");
 
       if (!storedId) {
         // Not logged in, redirect to sign-in
@@ -41,6 +46,9 @@ const ProfilePage = () => {
         fullName: storedName || "",
         email: storedEmail || "",
       });
+      if (storedPhoto) {
+        setPhotoUrl(storedPhoto);
+      }
     }
   }, [router]);
 
@@ -66,6 +74,12 @@ const ProfilePage = () => {
           // Update localStorage
           localStorage.setItem("userName", user.FullName || user.fullName || "");
           localStorage.setItem("userEmail", user.Email || user.email || "");
+
+          const fetchedPhoto = user.PhotoUrl || user.photoUrl || null;
+          if (fetchedPhoto) {
+            setPhotoUrl(fetchedPhoto);
+            localStorage.setItem("userPhoto", fetchedPhoto);
+          }
         }
       } catch (err) {
         console.error("Error fetching user data:", err);
@@ -89,6 +103,54 @@ const ProfilePage = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    // Reset the input so selecting the same file again still fires onChange
+    e.target.value = "";
+    if (!file) return;
+
+    setError("");
+    setSuccess("");
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file.");
+      return;
+    }
+
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      setError("User not logged in");
+      return;
+    }
+
+    setPhotoUploading(true);
+    try {
+      const resizedDataUrl = await resizeImageToDataUrl(file);
+
+      const baseUrl = "http://localhost:5216";
+      const res = await fetch(`${baseUrl}/auth/profile/${userId}/photo`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photoUrl: resizedDataUrl }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        setError(text || "Failed to update profile photo.");
+        return;
+      }
+
+      setPhotoUrl(resizedDataUrl);
+      localStorage.setItem("userPhoto", resizedDataUrl);
+      setSuccess("Profile photo updated!");
+    } catch (err) {
+      console.error("Error updating photo:", err);
+      setError("Failed to update profile photo. Please try again.");
+    } finally {
+      setPhotoUploading(false);
+    }
   };
 
   const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -227,6 +289,50 @@ const ProfilePage = () => {
           <p className="text-gray-400">
             Manage your account information and settings
           </p>
+        </div>
+
+        {/* Avatar */}
+        <div className="bg-dark-300 border border-dark-200 rounded-2xl p-8 mb-6 flex items-center gap-6">
+          <div className="relative w-24 h-24 shrink-0">
+            {photoUrl ? (
+              // Base64 data URLs aren't supported by next/image's optimizer, so use a plain <img>.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={photoUrl}
+                alt="Profile photo"
+                className="w-24 h-24 rounded-full object-cover border border-dark-200"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-dark-400 border border-dark-200 flex items-center justify-center text-3xl font-bold text-primary-200">
+                {(profileData.fullName || profileData.email || "?")
+                  .trim()
+                  .charAt(0)
+                  .toUpperCase()}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h2 className="text-lg font-bold text-white mb-1">Profile Photo</h2>
+            <p className="text-gray-400 text-sm mb-3">
+              JPG or PNG. It&apos;s resized automatically before uploading.
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoSelect}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={photoUploading}
+              className="bg-dark-400 border border-dark-200 text-gray-300 hover:border-primary-200 hover:text-primary-200 px-6"
+            >
+              {photoUploading ? "Uploading..." : "Change Photo"}
+            </Button>
+          </div>
         </div>
 
         {/* Tabs */}
