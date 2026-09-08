@@ -18,10 +18,13 @@ public class UserService : IUserService
 
     public async Task<User?> GetUserByEmailAsync(string email)
     {
+        // Case-insensitive match: SQLite's default TEXT collation (and SQL Server's
+        // ordinal one, depending on config) is case-sensitive, so "User@x.com" typed
+        // at sign-up would never match "user@x.com" typed at sign-in otherwise.
         const string sql = @"
             SELECT Id, FullName, Email, PasswordHash, CreatedAt, UpdatedAt
             FROM Users
-            WHERE Email = @Email";
+            WHERE LOWER(Email) = LOWER(@Email)";
 
         var user = await _connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = email });
         return user;
