@@ -369,40 +369,43 @@ const DashboardPage = () => {
               .map((interview) => (
                 <div
                   key={interview.id}
-                  className="group relative bg-dark-300 border border-dark-200 rounded-xl p-6 hover:border-primary-200 transition flex flex-col justify-between h-full"
+                  className="group bg-dark-300 border border-dark-200 rounded-xl p-6 hover:border-primary-200 transition flex flex-col justify-between h-full"
                 >
-                  {/* Delete Button - only visible on hover. Sits just outside
-                      the card corner so it doesn't overlap the score badge,
-                      which already occupies this card's top-right area. */}
-                  <button
-                    onClick={() => handleDeleteClick(interview.id, interview.role)}
-                    className="absolute -top-2 -right-2 p-2 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border border-dark-200 transition-colors z-10 opacity-0 group-hover:opacity-100"
-                    title="Delete interview"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-
                   <div>
                     {/* Type Badge */}
                     <div className="flex items-center justify-between mb-4">
                       <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-dark-400 text-primary-200">
                         {interview.type}
                       </span>
-                      {(interview.score !== null &&
-                        interview.score !== undefined &&
-                        interview.score !== 0) && (
-                        <div className="flex items-center gap-1 text-sm">
-                          <Image
-                            src="/star.svg"
-                            width={16}
-                            height={16}
-                            alt="score"
-                          />
-                          <span className="text-primary-200 font-bold">
-                            {interview.score}/100
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {(interview.score !== null &&
+                          interview.score !== undefined &&
+                          interview.score !== 0) && (
+                          <div className="flex items-center gap-1 text-sm">
+                            <Image
+                              src="/star.svg"
+                              width={16}
+                              height={16}
+                              alt="score"
+                            />
+                            <span className="text-primary-200 font-bold">
+                              {interview.score}/100
+                            </span>
+                          </div>
+                        )}
+                        {/* Delete Button - only visible on hover, sits
+                            inline next to the score badge instead of
+                            overlapping the card corner. */}
+                        <button
+                          onClick={() =>
+                            handleDeleteClick(interview.id, interview.role)
+                          }
+                          className="p-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 transition-colors opacity-0 group-hover:opacity-100"
+                          title="Delete interview"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
 
                     {/* Interview Role */}
