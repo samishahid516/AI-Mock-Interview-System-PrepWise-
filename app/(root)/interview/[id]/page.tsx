@@ -7,7 +7,6 @@ import { useParams } from "next/navigation";
 
 import Agent from "@/frontend/components/interview/Agent";
 import { getRandomInterviewCover } from "@/shared/utils/utils";
-import DisplayTechIcons from "@/frontend/components/common/DisplayTechIcons";
 import { Button } from "@/frontend/components/ui/button";
 
 // Mock interview data (UI only)
