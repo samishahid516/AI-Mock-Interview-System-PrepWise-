@@ -6,6 +6,15 @@ The platform demonstrates the intersection of **Real-time Voice AI**, **LLM-driv
 
 ---
 
+## 🚀 Live Demo
+
+- **Frontend** (Vercel): [ai-mock-interview-system-prep-wise.vercel.app](https://ai-mock-interview-system-prep-wise.vercel.app/)
+- **Backend API** (Render): [ai-mock-interview-system-prepwise.onrender.com](https://ai-mock-interview-system-prepwise.onrender.com/) — interactive Swagger docs at `/swagger`
+
+> The backend runs on Render's free tier, which spins down after 15 minutes of inactivity. The first request after a quiet period can take 30-50 seconds to wake back up — that's expected, not a bug.
+
+---
+
 ## 🏛️ Key Engineering Pieces
 
 ### 1. Real-time Voice Interviewing
@@ -87,10 +96,10 @@ sami.AI/
 │       ├── interview/            # Interview form + live voice Agent
 │       └── ui/                   # Base UI primitives (button, form, input, etc.)
 ├── backend/                    # ASP.NET Core Web API
-│   ├── Controllers/             # AuthController (register, login, profile, reset-password)
-│   ├── Models/                  # DTOs (Login, Register, ResetPassword, UpdateProfile, User)
+│   ├── Program.cs               # Minimal API endpoints (auth/profile routes), DI, middleware
+│   ├── Models/                  # DTOs (Login, Register, ResetPassword, UpdateProfile, UpdatePhoto, User)
 │   ├── Services/                # IUserService / UserService business logic
-│   └── Program.cs               # DI container & middleware configuration
+│   └── Dockerfile                # Container build used for the Render deployment
 └── shared/                     # Cross-cutting constants, types, and utils
 ```
 
@@ -98,15 +107,28 @@ sami.AI/
 
 ## 🔐 API Endpoints
 
-Base route: `/api/Auth`
+Base route: `/auth` (implemented as ASP.NET Core Minimal APIs directly in `Program.cs`)
 
-- `POST /api/Auth/register` — Register a new user
-- `POST /api/Auth/login` — Authenticate a user
-- `GET /api/Auth/profile/{userId}` — Get user profile
-- `PUT /api/Auth/profile/{userId}` — Update user profile
-- `POST /api/Auth/reset-password` — Reset password
+- `POST /auth/register` — Register a new user
+- `POST /auth/login` — Authenticate a user
+- `GET /auth/profile/{userId}` — Get user profile
+- `PUT /auth/profile/{userId}` — Update user profile (name/email)
+- `PUT /auth/profile/{userId}/photo` — Update profile photo (base64 image data URL)
+- `POST /auth/reset-password` — Reset password
 
-Full interactive API docs are available at `http://localhost:5216/swagger` while the backend is running.
+Full interactive API docs are available at `/swagger` — locally at `http://localhost:5216/swagger`, or on the [live backend](https://ai-mock-interview-system-prepwise.onrender.com/swagger).
+
+---
+
+## ☁️ Deployment
+
+- **Frontend** is deployed on **Vercel**, built directly from this repo's `main` branch (root directory `./`, zero extra config — Vercel auto-detects Next.js).
+- **Backend** is deployed on **Render** as a Docker web service, using the `backend/Dockerfile` and `render.yaml` blueprint in this repo. It runs on SQLite with `DatabaseProvider=Sqlite`.
+- The two are connected via environment variables:
+  - Frontend: `NEXT_PUBLIC_API_BASE_URL` points at the Render backend URL.
+  - Backend: `AllowedOrigins` (comma-separated) includes the Vercel frontend URL, so CORS allows the browser to call it.
+
+⚠️ Render's free tier has an **ephemeral filesystem** — the SQLite database resets on every redeploy/restart. Fine for a demo; for persistent user data in production, point `DatabaseProvider` at a hosted Postgres/SQL Server instead (the backend already references `Microsoft.Data.SqlClient`).
 
 ---
 
