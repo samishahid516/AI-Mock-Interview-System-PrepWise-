@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/frontend/components/ui/button";
+import { API_BASE_URL } from "@/shared/utils/api";
 
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const router = useRouter();
@@ -31,8 +32,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
     setSuccess("");
     setLoading(true);
 
-    // Backend API base URL (your .NET API)
-    const baseUrl = "http://localhost:5216";
+    const baseUrl = API_BASE_URL;
 
     try {
       if (type === "sign-up") {

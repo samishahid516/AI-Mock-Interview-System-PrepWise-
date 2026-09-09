@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/frontend/components/ui/button";
 import { resizeImageToDataUrl } from "@/shared/utils/image";
+import { API_BASE_URL } from "@/shared/utils/api";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -59,7 +60,7 @@ const ProfilePage = () => {
       if (!userId) return;
 
       try {
-        const baseUrl = "http://localhost:5216";
+        const baseUrl = API_BASE_URL;
         const res = await fetch(`${baseUrl}/auth/profile/${userId}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -129,7 +130,7 @@ const ProfilePage = () => {
     try {
       const resizedDataUrl = await resizeImageToDataUrl(file);
 
-      const baseUrl = "http://localhost:5216";
+      const baseUrl = API_BASE_URL;
       const res = await fetch(`${baseUrl}/auth/profile/${userId}/photo`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -167,7 +168,7 @@ const ProfilePage = () => {
     }
 
     try {
-      const baseUrl = "http://localhost:5216";
+      const baseUrl = API_BASE_URL;
       const res = await fetch(`${baseUrl}/auth/profile/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -222,7 +223,7 @@ const ProfilePage = () => {
     }
 
     try {
-      const baseUrl = "http://localhost:5216";
+      const baseUrl = API_BASE_URL;
       const res = await fetch(`${baseUrl}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
