@@ -15,6 +15,26 @@ The platform demonstrates the intersection of **Real-time Voice AI**, **LLM-driv
 
 ---
 
+## 📸 Screenshots
+
+| Sign In | Sign Up |
+| :---: | :---: |
+| ![Sign in](docs/screenshots/sign-in.png) | ![Sign up](docs/screenshots/sign-up.png) |
+
+| Dashboard |
+| :---: |
+| ![Dashboard](docs/screenshots/dashboard.png) |
+
+| Create Interview | Live Call |
+| :---: | :---: |
+| ![Create a new interview](docs/screenshots/interview-setup.png) | ![Live voice interview](docs/screenshots/interview-call.png) |
+
+| Feedback | Profile |
+| :---: | :---: |
+| ![Interview feedback](docs/screenshots/feedback.png) | ![User profile](docs/screenshots/profile.png) |
+
+---
+
 ## 🏛️ Key Engineering Pieces
 
 ### 1. Real-time Voice Interviewing
