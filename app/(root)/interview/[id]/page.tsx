@@ -232,7 +232,11 @@ const InterviewDetails = () => {
 
               <div>
                 <h1 className="text-3xl font-bold text-white mb-2">
-                  {interview.role} Interview
+                  {/* Several mock interview names already end in "Interview"
+                      (e.g. "Frontend Interview") - don't double it up. */}
+                  {interview.role}
+                  {!interview.role.trim().toLowerCase().endsWith("interview") &&
+                    " Interview"}
                 </h1>
                 <p className="text-gray-400 mb-4">
                   Practice and improve your skills with this targeted interview
