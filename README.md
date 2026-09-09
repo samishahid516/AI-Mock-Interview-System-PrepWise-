@@ -17,21 +17,26 @@ The platform demonstrates the intersection of **Real-time Voice AI**, **LLM-driv
 
 ## 📸 Screenshots
 
-| Sign In | Sign Up |
-| :---: | :---: |
-| ![Sign in](docs/screenshots/sign-in.png) | ![Sign up](docs/screenshots/sign-up.png) |
+**Sign In**
+![Sign in](docs/screenshots/sign-in.png)
 
-| Dashboard |
-| :---: |
-| ![Dashboard](docs/screenshots/dashboard.png) |
+**Sign Up**
+![Sign up](docs/screenshots/sign-up.png)
 
-| Create Interview | Live Call |
-| :---: | :---: |
-| ![Create a new interview](docs/screenshots/interview-setup.png) | ![Live voice interview](docs/screenshots/interview-call.png) |
+**Dashboard**
+![Dashboard](docs/screenshots/dashboard.png)
 
-| Feedback | Profile |
-| :---: | :---: |
-| ![Interview feedback](docs/screenshots/feedback.png) | ![User profile](docs/screenshots/profile.png) |
+**Create a New Interview**
+![Create a new interview](docs/screenshots/interview-setup.png)
+
+**Live Voice Interview**
+![Live voice interview](docs/screenshots/interview-call.png)
+
+**Interview Feedback**
+![Interview feedback](docs/screenshots/feedback.png)
+
+**User Profile**
+![User profile](docs/screenshots/profile.png)
 
 ---
 
