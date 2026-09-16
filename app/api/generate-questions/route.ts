@@ -40,20 +40,16 @@ Thank you!`;
       prompt: prompt,
     });
 
-    // Parse questions from response
     let parsedQuestions: string[] = [];
     try {
-      // Try to parse as JSON array
       parsedQuestions = JSON.parse(generatedText.trim());
     } catch {
-      // If not JSON, try to extract questions from text
       const questionMatches = generatedText.match(/\d+\.\s*"([^"]+)"/g);
       if (questionMatches) {
         parsedQuestions = questionMatches.map((match) =>
           match.replace(/\d+\.\s*"/, "").replace(/"$/, "")
         );
       } else {
-        // Fallback: split by newlines and clean up
         parsedQuestions = generatedText
           .split("\n")
           .map((line: string) => line.replace(/^\d+\.\s*/, "").trim())
@@ -62,7 +58,6 @@ Thank you!`;
       }
     }
 
-    // Ensure we have questions
     if (parsedQuestions.length === 0) {
       // Fallback questions
       parsedQuestions = [
@@ -83,4 +78,3 @@ Thank you!`;
     );
   }
 }
-
